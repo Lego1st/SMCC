@@ -106,12 +106,12 @@ module.exports = class MentionItem extends Component {
             <TouchableOpacity
                 onPress={() => Linking.openURL('https://www.facebook.com').catch(err => console.error('An error occurred', err))}
                 style={{
-          flexGrow: 1,
-          flexDirection: 'column',
-          backgroundColor: '#FFFFFF',
-                marginBottom: 0,
-                borderWidth: 0
-        }}>
+                  flexGrow: 1,
+                  flexDirection: 'column',
+                  backgroundColor: '#FFFFFF',
+                  marginBottom: 0,
+                  margin: 10,
+            }}>
                 <View style={{
                   flexDirection: 'row',
                   flex: 2/3,

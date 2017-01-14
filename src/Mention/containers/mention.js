@@ -50,8 +50,9 @@ const styles = StyleSheet.create({
   },
   instructions: {
     textAlign: 'center',
-    color: '#333333',
+    color: 'white',
     marginBottom: 5,
+    fontSize: 20,
   },
 });
 
@@ -157,34 +158,34 @@ class Basic extends Component {
         menu={menu}
         isOpen={this.state.isOpen}
         onChange={(isOpen) => this.updateMenuState(isOpen)}>
-        <View style={{marginTop: 20, flexDirection: 'column', backgroundColor: 'white', flex: 1}}>
+        <View style={{flexDirection: 'column', flex: 1}}>
             <View style={{flexDirection: 'row', borderWidth:0
-            , backgroundColor: 'white', flex: 1/5
-            , alignItems: 'center', justifyContent: 'space-between'}}>
+            , backgroundColor: 'black', height: window.height/15
+            , alignItems: 'center', justifyContent: 'space-between'
+            , paddingLeft: 10, paddingRight: 15}}>
               <Button
                   onPress={() => this.toggle()}
                   style={{height: 30, width: 30, borderWidth: 1, alignSelf: 'center'
-                            , justifyContent: 'center', marginLeft: 20
+                            , justifyContent: 'center'
                             , marginBottom: 0, alignItems: 'center'}}>
                   <Icon
-                      //onPress={() => this.toggle()}
-                      name="bars" size={20} style={{color: '#FF3366'}} />
+                      name="bars" size={20} style={{color: '#FFF'}} />
               </Button>
               <Text style={styles.instructions}>
                   {this.state.selectedItem}
               </Text>
-              <Text>Lọc</Text>
+              <Text style={{color: 'white'}}>Lọc</Text>
             </View>
-            <View style={{flex: 4/5}}>
+            <View style={{backgroundColor: 'white', flex: 1}}>
                 <ScrollableTabView
-                    style={{marginTop: 20, backgroundColor: 'white' }}
+                    style={{backgroundColor: 'white' }}
                     tabBarPosition="bottom"
                     renderTabBar={() => <TabBar />}
                 >
                     <ScrollView tabLabel="ios-paper" style={{height: 700, backgroundColor: 'white'}}>
                         <ListView
                             renderSeparator={(sectionId, rowId) => <View key={rowId}
-                                                                     style={{ flex: 1, backgroundColor: 'gray'
+                                                                     style={{ flex: 1, backgroundColor: '#F8F8F8'
                                                                          , height: 5}} />}
                             enableEmptySections={true}
                             dataSource={this.state.listMention}

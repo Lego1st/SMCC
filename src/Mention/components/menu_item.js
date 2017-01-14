@@ -62,24 +62,24 @@ const SELECTORS = [
 const styles = StyleSheet.create({
   menu: {
     flex: 1,
-    width: 250,
+    width: window.width,
     height: window.height,
     backgroundColor: '#222822',
     position: 'absolute',
     opacity: 1,
-      marginTop: 20
   },
   avatarContainer: {
-    marginBottom: 20,
+    height: window.height/15,
+    flexDirection: 'row',
   },
   name: {
     backgroundColor: '#1A1D1C',
-    alignItems: 'center', 
+    alignItems: 'center',
     justifyContent: 'center',
-    fontSize: 14,
-    width: 250,
-    height: window.height / 20,
+    fontSize: 18,
+    width: window.width,
     textAlign: 'center',
+    textAlignVertical: 'center',
     color: 'white'
   },
   item: {
@@ -98,8 +98,9 @@ const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
-    padding: 20,
-    backgroundColor: '#fff',
+    padding: 10,
+    paddingLeft: 20,
+    backgroundColor: '#222822',
   },
 });
 class MenuItem extends Component {
@@ -118,8 +119,10 @@ class MenuItem extends Component {
     //console.log(this.props)
       //console.log(this.props.rowData)
     return (
-      <View style={styles.container}>
-        <Text onPress={() => this.props.onItemMentionSelected(this.props.rowData.project_name, this.props.rowData.project_keyword_value)}>{this.props.rowData.project_name}</Text>
+      <View style={styles.content}>
+        <Text
+        style = {{color: 'white'}}
+        onPress={() => this.props.onItemMentionSelected(this.props.rowData.project_name, this.props.rowData.project_keyword_value)}>{this.props.rowData.project_name}</Text>
       </View>
     );
   }
@@ -160,17 +163,29 @@ module.exports = class Menu extends Component {
   render() {
       console.log("render again")
     return (
-      <ScrollView scrollsToTop={false} style={styles.menu}>
+      <View style={styles.menu}>
         <View style={styles.avatarContainer}>
-          <Text style={styles.name}>Dự án</Text>
+          <Text style={[styles.name, {flex: 2/3}]}>Dự án</Text>
+          <View style={[styles.name, {flex: 1/3}]} />
         </View>
 
         <ListView
+            style = {{flex: 12/15}}
             renderRow={(rowData) => <MenuItem onItemMentionSelected={this.props.onItemMentionSelected} rowData={rowData} /> }
             enableEmptySections={true}
             dataSource={this.state.dataSource}
         />
-      </ScrollView>
+        <View style={{paddingBottom: 20}}>
+          <View style={styles.avatarContainer}>
+            <Text style={[styles.name, {flex: 2/3}]}>Cài đặt</Text>
+            <View style={[styles.name, {flex: 1/3}]} />
+          </View>
+          <View style={styles.avatarContainer}>
+            <Text style={[styles.name, {flex: 2/3}]}>Đăng xuất</Text>
+            <View style={[styles.name, {flex: 1/3}]} />
+          </View>
+        </View>
+      </View>
     );
   }
 };

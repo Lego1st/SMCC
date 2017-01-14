@@ -19,6 +19,7 @@ export function loginSuccess (json) {
 
 export function login(email, password) {
     console.log(md5.str_md5('InfoRe28111'))
+    password = md5.hex_md5(password)
     return dispatch => {
         var request = new XMLHttpRequest();
         request.onreadystatechange = (e) => {
@@ -31,7 +32,7 @@ export function login(email, password) {
                   let json = {};
                   json.user_id = request.responseText
                   json.user_name = email;
-                  json.password = '1b4727a96eb05921e68228341642b529';
+                  json.password = password;
                   console.log(json)
                   dispatch(loginSuccess(json));
                   Actions.Mention()
@@ -44,7 +45,7 @@ export function login(email, password) {
           }
         };
 
-        request.open('GET', baseUrl + 'LoginApi.aspx?username='+ email +'&pass=1b4727a96eb05921e68228341642b529');
+        request.open('GET', baseUrl + 'LoginApi.aspx?username='+ email +'&pass=' + password);
         request.send();
     }
 }

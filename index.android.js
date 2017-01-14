@@ -7,6 +7,7 @@ import {
     View
 } from 'react-native';
 import App from './src/main'
+console.disableYellowBox = true;
 
 class SMCC extends Component {
     render() {

@@ -66,11 +66,11 @@ const styles = StyleSheet.create({
         height: 45,
         flexDirection: 'row',
         paddingTop: 5,
-        borderWidth: 1,
-        borderTopWidth: 0,
+        borderWidth: 0.2,
+        borderBottomWidth: 0,
         borderLeftWidth: 0,
         borderRightWidth: 0,
-        borderBottomColor: 'rgba(0,0,0,0.05)',
+        borderBottomColor: 'blue',
     },
 });
 

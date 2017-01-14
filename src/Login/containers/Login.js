@@ -56,7 +56,8 @@ class Login extends Component {
 
     login() {
       console.log(this.state.username)
-      this.props.actions.login(this.state.username, this.state.pass)
+      this.props.actions.login(this.state.username, this.state.password)
+      //this.props.actions.login('admin@orm.vn', 'InfoRe28111')
     }
 
     render() {
