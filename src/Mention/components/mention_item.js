@@ -117,8 +117,9 @@ module.exports = class MentionItem extends Component {
                   flex: 2/3,
                 }}>
                     <Image
+                        style = {{flex: 2/10}}
                         source={{uri: this.props.rowData.author_avatar_url}}
-                        style={{flex: 2/10, width: 50, height: 50}}/>
+                        style={{width: 50, height: 50, borderRadius: 50}}/>
                     <View style={{
                       paddingLeft: 10,
                       flexDirection: 'column',
@@ -132,7 +133,7 @@ module.exports = class MentionItem extends Component {
                     </View>
                 </View>
                 <HTMLView
-                    value={this.props.rowData.content_oryginal}
+                    value={this.props.rowData.content == "" ? this.props.rowData.content_oryginal : this.props.rowData.content}
                     style={{flex: 1/3, color: '#000'}}
                 />
 

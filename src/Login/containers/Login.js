@@ -57,9 +57,11 @@ class Login extends Component {
     login() {
       console.log(this.state.username)
       this.props.actions.login(this.state.username, this.state.password)
-      //this.props.actions.login('admin@orm.vn', 'InfoRe28111')
     }
 
+    componentWillMount() {
+      //this.props.actions.login('admin@orm.vn', 'InfoRe28111')
+    }
     render() {
         return (
           <View style={styles.container}>
@@ -71,9 +73,9 @@ class Login extends Component {
                   <Image source={require('./../images/logo.png')} style={styles.logo}/>
                 </View>
 
-                <View style={{flex: 4/5, flexDirection: 'column',justifyContent: 'center'}}>
-                  <Text style={{fontSize: 10}}>SMCC Việt Nam</Text>
-                  <Text style={{fontSize: 10}}>Công cụ thu thập, phân tích dữ liệu Mạng xã hội</Text>
+                <View style={{flex: 4/5, flexDirection: 'column',justifyContent: 'center', alignItems: 'center'}}>
+                  <Text style={{fontSize: 12}}>SMCC Việt Nam</Text>
+                  <Text style={{fontSize: 12}}>Công cụ thu thập, phân tích dữ liệu Mạng xã hội</Text>
                 </View>
               </View>
               <View style={{flex: 1/10}}/>
@@ -82,14 +84,14 @@ class Login extends Component {
             <View style={{flex: 1/9}}></View>
 
             <View style={{
-              flexDirection: 'column',alignItems:'flex-start',flex: 7/9}}>
+              flexDirection: 'column',alignItems:'flex-start',flex: 7/9, padding: 20, paddingTop: 0}}>
               <View style={{alignSelf: 'stretch',marginBottom: 10,}}>
                 <Hoshi
                   label='Email'
                   onChangeText={(text) => this.onChangeUsername(text)}
                   borderColor={'#1791D6'}
-                  labelStyle={{ color: '#1791D6', fontSize: 12}}
-                  inputStyle={{ color: '#808080', fontSize: 10, height: 5}}
+                  labelStyle={{ color: '#1791D6', fontSize: 15}}
+                  inputStyle={{ color: '#808080', fontSize: 14}}
                   activeColor={'#da7071'}
                   style={{height: 20, width: window.width,
                     marginLeft: 30,marginRight: 30, color: '#808080'}}
@@ -98,22 +100,22 @@ class Login extends Component {
 
               <View style={{alignSelf: 'stretch',}}>
                 <Hoshi
-                  label='Password (optional)'
+                  label='Password'
                   onChangeText={(text) => this.onChangePassword(text)}
                   borderColor={'#1791D6'}
                   secureTextEntry={true}
-                  labelStyle={{ color: '#1791D6', fontSize: 12 }}
-                  inputStyle={{ color: '#808080', fontSize: 10 }}
+                  labelStyle={{ color: '#1791D6', fontSize: 15 }}
+                  inputStyle={{ color: '#808080', fontSize: 14 }}
                   style={{height: 20, width: window.width,
                     marginLeft: 30,marginRight: 30}}
                 />
               </View>
 
-              <View style={{flexDirection: 'row',marginTop: 20,marginLeft: 30,marginRight: 30,}}>
+              <View style={{flexDirection: 'row',marginTop: 50,marginLeft: 30,marginRight: 30,}}>
                 <View style={{flex: 1/4}}/>
                 <Button
                     onPress={() => this.login()}
-                    style={{borderColor: '#1791D6', flex: 2/4, backgroundColor: 'white', height: 30, borderRadius: 22}} textStyle={{fontSize: 10}}>
+                    style={{borderColor: '#1791D6', flex: 2/4, backgroundColor: 'white', height: 40, borderRadius: 22, borderWidth: 2}} textStyle={{textAlign: 'center', textAlignVerticale: 'center', fontSize: 16}}>
                   ĐĂNG NHẬP
                 </Button>
                 <View style={{flex: 1/4}}/>
