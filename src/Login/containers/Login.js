@@ -7,6 +7,7 @@ import {
     TextInput,
     Image,
     Platform,
+    AsyncStorage,
     Dimensions
 } from 'react-native';
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
@@ -16,6 +17,7 @@ import styles from '../styles/style';
 import * as API from '../libs/backend'
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+import md5 from "react-native-md5"
 import * as LoginActions from '../actions/login';
 const window = Dimensions.get('window');
 
@@ -56,10 +58,16 @@ class Login extends Component {
 
     login() {
       console.log(this.state.username)
-      this.props.actions.login(this.state.username, this.state.password)
+      this.props.actions.login(this.state.username, md5.hex_md5(this.state.password))
     }
 
     componentWillMount() {
+      AsyncStorage.getItem("user_data").then((value) => {
+            // this.setState({"myKey": value});
+            console.log("xxxxxxxxxxxxxxxxxxxxxxxx");
+            console.log(JSON.parse(value)['user_id']);
+            this.props.actions.login(JSON.parse(value)['user_name'], JSON.parse(value)['password'])
+        }).done();
       //this.props.actions.login('admin@orm.vn', 'InfoRe28111')
     }
     render() {

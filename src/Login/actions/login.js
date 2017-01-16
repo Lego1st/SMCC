@@ -6,6 +6,9 @@ const {
     LOGIN_SUCCESS,
 
 } = require('../libs/constants').default;
+import {
+    AsyncStorage
+} from 'react-native';
 import * as API from '../libs/backend';
 import {Actions} from 'react-native-router-flux'
 
@@ -18,7 +21,6 @@ export function loginSuccess (json) {
 }
 
 export function login(email, password) {
-    password = md5.hex_md5(password)
     return dispatch => {
         var request = new XMLHttpRequest();
         request.onreadystatechange = (e) => {
@@ -34,6 +36,7 @@ export function login(email, password) {
                   json.password = password;
                   console.log(json)
                   dispatch(loginSuccess(json));
+                  AsyncStorage.setItem("user_data", JSON.stringify(json));
                   Actions.Mention()
               }else{
 
