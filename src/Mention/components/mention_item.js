@@ -1,5 +1,6 @@
 const React = require('react');
 const {
+    ActivityIndicator,
     Dimensions,
     StyleSheet,
     Linking,
@@ -9,6 +10,7 @@ const {
     Image,
     ListView,
     Text,
+    RefreshControl
 } = require('react-native');
 const { Component } = React;
 import Button from 'apsl-react-native-button'
@@ -104,7 +106,7 @@ module.exports = class MentionItem extends Component {
 
         return (
             <TouchableOpacity
-                onPress={() => Linking.openURL('https://www.facebook.com').catch(err => console.error('An error occurred', err))}
+                onPress={() => Linking.openURL(this.props.rowData.result_open_link).catch(err => console.error('An error occurred', err))}
                 style={{
                   flexGrow: 1,
                   flexDirection: 'column',
@@ -117,8 +119,12 @@ module.exports = class MentionItem extends Component {
                   flex: 2/3,
                 }}>
                     <Image
-                        style = {{flex: 2/10}}
-                        source={{uri: this.props.rowData.author_avatar_url}}
+                        style={{flex: 2/10}}
+                        source={{
+                          uri: this.props.rowData.author_avatar_url[0] == 'h' ?
+                          (this.props.rowData.author_avatar_url) :
+                          ('http://smcc.vn' + this.props.rowData.author_avatar_url)
+                        }}
                         style={{width: 50, height: 50, borderRadius: 50}}/>
                     <View style={{
                       paddingLeft: 10,

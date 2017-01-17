@@ -1,5 +1,6 @@
 const React = require('react');
 const {
+  AsyncStorage,
   Dimensions,
   StyleSheet,
   ScrollView,
@@ -17,6 +18,7 @@ import * as Animatable from 'react-native-animatable';
 import Collapsible from 'react-native-collapsible';
 import Accordion from 'react-native-collapsible/Accordion';
 import * as API from '../libs/backend'
+import {Actions} from 'react-native-router-flux'
 
 var DATA = [];
 const BACON_IPSUM = 'Bacon ipsum dolor amet chuck turducken landjaeger tongue spare ribs. Picanha beef prosciutto meatball turkey shoulder shank salami cupim doner jowl pork belly cow. Chicken shankle rump swine tail frankfurter meatloaf ground round flank ham hock tongue shank andouille boudin brisket. ';
@@ -159,7 +161,10 @@ module.exports = class Menu extends Component {
       }
     }
 
-
+    logout() {
+      AsyncStorage.removeItem("user_data");
+      Actions.LoginMain();
+    }
   render() {
       console.log("render again")
     return (
@@ -181,7 +186,7 @@ module.exports = class Menu extends Component {
             <View style={[styles.name, {flex: 1/3}]} />
           </View>
           <View style={styles.avatarContainer}>
-            <Text style={[styles.name, {flex: 2/3}]}>Đăng xuất</Text>
+            <Text style={[styles.name, {flex: 2/3}]}  onPress={()=>this.logout()} >Đăng xuất</Text>
             <View style={[styles.name, {flex: 1/3}]} />
           </View>
         </View>

@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import {
+    ActivityIndicator,
     AppRegistry,
     StyleSheet,
     Text,
@@ -20,6 +21,7 @@ import { connect } from 'react-redux';
 import md5 from "react-native-md5"
 import * as LoginActions from '../actions/login';
 const window = Dimensions.get('window');
+import Modal from "react-native-modalbox";
 
 function mapStateToProps(state) {
     return {
@@ -40,6 +42,8 @@ class Login extends Component {
         this.state = {
             username: '',
             password: '',
+            isLoadDisabled: false,
+            isLoading: false,
         }
     }
 
@@ -67,13 +71,16 @@ class Login extends Component {
             console.log("xxxxxxxxxxxxxxxxxxxxxxxx");
             console.log(JSON.parse(value)['user_id']);
             this.props.actions.login(JSON.parse(value)['user_name'], JSON.parse(value)['password'])
-        }).done();
+        })
+          .catch((error) => {
+            console.log(error)
+          });
       //this.props.actions.login('admin@orm.vn', 'InfoRe28111')
     }
     render() {
         return (
           <View style={styles.container}>
-            <View style={{justifyContent: 'center'
+            <View style={{marginTop: 50, justifyContent: 'center'
               ,flexDirection: 'row',alignItems:'flex-start', flex: 1/9}}>
               <View style={{flex: 1/10}}/>
               <View style={{flexDirection: 'row', flex: 8/10}}>
@@ -122,13 +129,36 @@ class Login extends Component {
               <View style={{flexDirection: 'row',marginTop: 50,marginLeft: 30,marginRight: 30,}}>
                 <View style={{flex: 1/4}}/>
                 <Button
-                    onPress={() => this.login()}
+                    onPress={() => {
+                      this.setState({isLoading: true});
+                      this.login()
+                    }}
                     style={{borderColor: '#1791D6', flex: 2/4, backgroundColor: 'white', height: 40, borderRadius: 22, borderWidth: 2}} textStyle={{textAlign: 'center', textAlignVerticale: 'center', fontSize: 16}}>
                   ĐĂNG NHẬP
                 </Button>
                 <View style={{flex: 1/4}}/>
               </View>
+
             </View>
+            <Modal
+              style = {{flexDirection: 'column', justifyContent: 'center', alignItems: 'center', height: 100, width: 200, borderRadius: 10}}
+              position={"center"}
+              isDisabled = {this.state.isLoadDisabled}
+              onOpened={() => {
+                this.setState({isLoadDisabled: true})
+                setInterval(() => {
+                  this.setState({isLoadDisabled: false, isLoading: false})
+                }, 3000);
+              }}
+              isClose={!this.state.isLoading}
+              isOpen={this.state.isLoading}>
+                <ActivityIndicator
+                  style={{justifyContent: 'center', alignItems: 'center'}}
+                  size = "large"
+                  color = "blue"
+                />
+                <Text textAlign='center'> Đang xử lý đăng nhập </Text>
+            </Modal>
           </View>
 
         )

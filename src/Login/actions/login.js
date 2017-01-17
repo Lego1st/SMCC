@@ -7,7 +7,8 @@ const {
 
 } = require('../libs/constants').default;
 import {
-    AsyncStorage
+    AsyncStorage,
+    Alert,
 } from 'react-native';
 import * as API from '../libs/backend';
 import {Actions} from 'react-native-router-flux'
@@ -39,7 +40,7 @@ export function login(email, password) {
                   AsyncStorage.setItem("user_data", JSON.stringify(json));
                   Actions.Mention()
               }else{
-
+                Alert.alert('Bạn đã nhập sai mật khẩu hoặc email. Xin mời nhập lại!')
               }
 
           } else {

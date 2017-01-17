@@ -16,19 +16,35 @@ import Button from 'apsl-react-native-button'
 import CheckBox from 'react-native-custom-checkbox'
 import Modal from 'react-native-modalbox'
 
-export default class donut extends Component {
-  state = {
-    isDisabled: false,
+export default class Filter extends Component {
+    constructor(props) {
+        super(props);
+        //const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
+        this.state = {
+
+        };
+    }
+  openModal1() {
+    this.setState({
+
+    })
   }
-  openModal1(id) {
-    this.refs.modal1.open();
+  openMM() {
+      this.refs.modal1.open();
+  }
+  componentDidMount() {
+    console.log("Opened filter_______________________________");
   }
   render() {
     return (
-      <View style={styles.container}>
-        <Button onPress={this.openModal1.bind(this)}>Mở Filter</Button>
-
-        <Modal style={{justifyContent: 'center',alignItems: 'center', height: 400,width: 400}} position={"center"} ref={"modal1"} isDisabled={this.state.isDisabled}>
+        <View style={{justifyContent:'center', alignItems: 'center'}}>
+        <Text style={{height: 600, width: 300}} onPress = {this.openMM.bind(this)}>
+          hihi
+        </Text>
+        <Modal
+            style={{justifyContent: 'center',alignItems: 'center', height: 400,width: 400}}
+            position={"center"} ref={"modal1"}
+            isDisabled={this.state.isOpened}>
           <View style={styles.container}>
             <Text style = {{textAlign: 'center', margin: 30, fontSize: 20}}> SẮC THÁI </Text>
 
@@ -99,7 +115,7 @@ export default class donut extends Component {
             </View>
           </View>
         </Modal>
-      </View>
+        </View>
     );
   }
 }
