@@ -57,16 +57,18 @@ module.exports = class ChartItem extends Component {
     }
     render() {
         return (
-            <View style={{height: window.height}}>
+            <View style={{height: 1300}}>
                 <WebViewBridge
                     //domStorageEnabled={true}
                     //scalesPageToFit={true}
                     javaScriptEnabled={true}
+                    automaticallyAdjustContentInsets={false}
+                    scrollEnabled={false}
                     onBridgeMessage={this.onBridgeMessage.bind(this)}
                     ref="webviewbridge"
                     source={require('./chart/chart.html')}
                     //source={{uri: 'https://google.com/'}}
-                    style={{}}
+                    style={{height: window.height}}
                 />
             </View>
         )
