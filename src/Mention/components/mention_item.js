@@ -78,11 +78,17 @@ module.exports = class MentionItem extends Component {
             dataSource: ds.cloneWithRows(DATA),
             activeSection: false,
             collapsed: true,
+            uri: 'http://homepages.neiu.edu/~whuang2/cs300/images/white.png'
         };
     }
 
     componentDidMount() {
         Linking.addEventListener('url', this._handleOpenURL);
+        this.setState({
+            uri: this.props.rowData.author_avatar_url[0] == 'h' ?
+                (this.props.rowData.author_avatar_url) :
+                ('http://smcc.vn' + this.props.rowData.author_avatar_url)
+        })
     }
     componentWillUnmount() {
         Linking.removeEventListener('url', this._handleOpenURL);
@@ -94,10 +100,10 @@ module.exports = class MentionItem extends Component {
     render() {
         let rate;
         let color;
-        if (this.props.rowData.sentiment_score == 0) {
+        if (this.props.rowData.sentiment_score == 1) {
             rate = 'Tiêu cực'
             color= 'red'
-        } else if(this.props.rowData.sentiment_score == 1){
+        } else if(this.props.rowData.sentiment_score == 2){
             rate = 'Trung tính'
         }else{
             rate = 'Tích cực'
@@ -120,12 +126,12 @@ module.exports = class MentionItem extends Component {
                 }}>
                     <Image
                         style={{flex: 2/10}}
+                        onError={() => this.setState({uri: 'http://smcc.vn/static/avatar_default_blue_small.png'})}
+                        style={{width: 50, height: 50, borderRadius: 50}}
                         source={{
-                          uri: this.props.rowData.author_avatar_url[0] == 'h' ?
-                          (this.props.rowData.author_avatar_url) :
-                          ('http://smcc.vn' + this.props.rowData.author_avatar_url)
+                          uri: this.state.uri
                         }}
-                        style={{width: 50, height: 50, borderRadius: 50}}/>
+                        />
                     <View style={{
                       paddingLeft: 10,
                       flexDirection: 'column',

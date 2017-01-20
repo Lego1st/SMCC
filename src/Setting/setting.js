@@ -107,7 +107,7 @@ class BasicSwitch extends React.Component {
   }
 }
 
-export default class cakes extends Component {
+export default class Setting extends Component {
   render() {
     return (
       <BasicSwitch />
@@ -146,5 +146,3 @@ const styles = StyleSheet.create({
     color: '#FFF',
   }
 });
-
-AppRegistry.registerComponent('cakes', () => cakes);

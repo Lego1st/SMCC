@@ -55,7 +55,7 @@ export async function getAllMentions(key, user_name, password, p, rt, se) {
     //log('http://orm.vn:2930/PagingApi.aspx?key='+ key +'&username='+ user_name +'&pass='+ password +''+)
     return await xhrPromise.send({
         method: 'GET',
-        url: 'http://orm.vn:2930/PagingApi.aspx?key='+ key + '&rt=' + rt + '&se=' + se + '&p='+ p +'&username='+ user_name +'&pass='+ password +''
+        url: 'http://orm.vn:2930/PagingApi.aspx?key='+ key + '&se=' + se + '&rt=' + rt + '&p='+ p +'&username='+ user_name +'&pass='+ password +''
         //url: 'http://orm.vn:2930//ProjectListApI.aspx?userId='+ user_id +'username='+ user_name +'&pass=' + password + ''
     })
         .then((results) => {

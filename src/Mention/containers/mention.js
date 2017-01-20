@@ -29,7 +29,7 @@ import { connect } from 'react-redux';
 import Filter from '../components/filter'
 const window = Dimensions.get('window');
 import Modal from 'react-native-modalbox'
-
+import Setting from '../../Setting/setting'
 import CheckBox from 'react-native-custom-checkbox'
 
 const styles = StyleSheet.create({
@@ -91,7 +91,17 @@ class Basic extends Component {
             isFilter: false,
             isLoading: true,
             isLoadDisabled: false,
+            isFetching: false,
             fanpage: false,
+            tichCuc: false,
+            tieuCuc: false,
+            baoChi: false,
+            dienDan: false,
+            binhLuan: false,
+            group: false,
+            caNhan: false,
+            view: 'normalView',
+            networkError: false,
         };
     }
     onRefresh() {
@@ -129,16 +139,29 @@ class Basic extends Component {
         //console.log("Searching...")
         p_new = this.state.p + 1
         this.setState({
-          p: p_new
+          p: p_new,
+          isFetching: true,
         }, () => {
           API.getAllMentions(this.state.keyWord, this.props.global.user.user_name, this.props.global.user.password, this.state.p, this.state.rt, this.state.se)
               .then((results) => {
-                  //console.log(results)
-                  const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
-                  this.setState({
-                      Mentions: results,
-                      listMention: ds.cloneWithRows(results.results)
-                  })
+                  if (results.results.length !== 0) {
+                      console.log(results.results)
+                      let tempArray = this.state.Mentions.results.concat(results.results)
+                      const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
+                      this.setState({
+                          isFetching: false,
+                          Mentions: tempArray,
+                          listMention: ds.cloneWithRows(tempArray)
+                      })
+                  }
+              })
+              .catch((error) => {
+                this.setState({
+                    Mentions: results,
+                    listMention: ds.cloneWithRows(results.results),
+                    isRefreshing: false,
+                    isFetching: false,
+                })
               })
         });
     }
@@ -159,14 +182,16 @@ class Basic extends Component {
       isOpen: false,
       selectedItem: item,
       statePage: 0,
-      keyWord: keyword
+      keyWord: keyword,
+      view: 'normalView',
+      isFetching: true,
     });
       API.getAllMentions(keyword, this.props.global.user.user_name, this.props.global.user.password, this.state.p, this.state.rt, this.state.se)
           .then((results) => {
               //console.log(results)
               const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2 });
               this.setState({
-                  isLoading: true,
+                  isFetching: false,
                   Mentions: results,
                   listMention: ds.cloneWithRows(results.results)
               })
@@ -190,7 +215,21 @@ class Basic extends Component {
         //     })
     }
 
+    onSettingSelected = () => {
+        this.setState({
+            isOpen: false,
+            view: 'settingView'
+        })
+    }
+
+    componentWillMount() {
+        this.setState({
+            isFetching: true
+        }, () => console.log( this.state.isFetching))
+    }
+
   componentDidMount() {
+      var self = this;
     API.getAllProjects(this.props.global.user.user_id, this.props.global.user.user_name, this.props.global.user.password)
         .then((results) => {
           //console.log(results)
@@ -205,7 +244,10 @@ class Basic extends Component {
                     const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
                     this.setState({
                         Mentions: results,
-                        listMention: ds.cloneWithRows(results.results)
+                        listMention: ds.cloneWithRows(results.results),
+                        isFetching: false
+                    }, () => {
+                        console.log(self.state.isFetching)
                     })
                 })
         })
@@ -216,25 +258,70 @@ class Basic extends Component {
     this.setState({isFilter: true});
   }
 
-  onFanpageChange(name, cheked) {
-    this.setState({rt: this.state.rt + '1'})
+  onFilterConfirm() {
+     console.log(this.state)
+    //  fanpage: false,
+    //  tichCuc: false,
+    //  tieuCuc: false,
+    //  baoChi: false,
+    //  dienDan: false,
+    //  binhLuan: false,
+    //  group: false,
+    //  caNhan: false,
+    var _rt, _se;
+    _rt = (this.state.fanpage ? "0," : "") +
+          (this.state.dienDan ? '1,' : '') +
+          (this.state.group ? '2,' : '') +
+          (this.state.baoChi ? '3,' : '') +
+          (this.state.caNhan ? '4,' : '') +
+          (this.state.binhLuan ? '5,' : '');
+    _se = (this.state.tichCuc ? '3' : '');
+    _se = (this.state.tieuCuc ? '0' : '');
+    if(this.state.tichCuc && this.state.tieuCuc) {
+      _se = '';
+    }
+    this.setState({rt: _rt, se: _se, isFilter: false});
+    this.onRefresh()
   }
 
-  testtt() {
-    Alert.alert(
-      '',
-      'My Alert Msg',
-      [
-      ]
-    )
-  }
+
+
   render() {
       //console.log(this.state.DATA)
       //console.log(this.props.global.user)
     const menu = <Menu
                     DATA={this.state.DATA}
+                    onSettingSelected={this.onSettingSelected}
                     onItemMentionSelected={this.onItemMentionSelected}
                     onItemAnalysisSelected={this.onItemAnalysisSelected}/>;
+    var view = null;
+    if (this.state.view == 'normalView') {
+        view = <ListView
+            refreshControl={
+                            <RefreshControl
+                                refreshing={this.state.isRefreshing}
+                                onRefresh={() => this.onRefresh()}
+                                colors={['#EA0000']}
+                                tintColor="black"
+                                title="loading..."
+                                titleColor="black"
+                                progressBackgroundColor="white"
+                                removeClippedSubviews={true}
+                            />
+                        }
+            onEndReachedThreshold={10}
+            onEndReached={() => this.searchWhileScrolling()}
+            renderSeparator={(sectionId, rowId) => <View key={rowId}
+                                                                     style={{ flex: 1, backgroundColor: '#F8F8F8'
+                                                                         , height: 5}} />}
+            enableEmptySections={true}
+            dataSource={this.state.listMention}
+            renderRow={(rowData) => <MentionItem rowData={rowData}/>}
+        />
+    } else {
+        view = <Setting/>
+    }
+
 
     return (
 
@@ -276,40 +363,12 @@ class Basic extends Component {
 
                 <View style={{flex: 1}}
                 tabLabel="ios-paper">
-                    <ListView
-                        refreshControl={
-                            <RefreshControl
-                                refreshing={this.state.isRefreshing}
-                                onRefresh={() => this.onRefresh()}
-                                colors={['#EA0000']}
-                                tintColor="black"
-                                title="loading..."
-                                titleColor="black"
-                                progressBackgroundColor="white"
-                                removeClippedSubviews={true}
-                            />
-                        }
-                        onEndReachedThreshold={10}
-                        onEndReached={() => this.searchWhileScrolling()}
-                        renderSeparator={(sectionId, rowId) => <View key={rowId}
-                                                                     style={{ flex: 1, backgroundColor: '#F8F8F8'
-                                                                         , height: 5}} />}
-                        enableEmptySections={true}
-                        dataSource={this.state.listMention}
-                        renderRow={(rowData) => <MentionItem rowData={rowData}/>}
-                    />
+                    {view}
                     <Modal
                       style = {{flexDirection: 'column', justifyContent: 'center', alignItems: 'center', height: 100, width: 200, borderRadius: 10}}
                       position={"center"}
-                      isDisabled = {this.state.isLoadDisabled}
-                      onOpened={() => {
-                        this.setState({isLoadDisabled: true})
-                        setInterval(() => {
-                          this.setState({isLoadDisabled: false, isLoading: false})
-                        }, 3000);
-                      }}
-                      isClose={!this.state.isLoading}
-                      isOpen={this.state.isLoading}>
+                      isDisabled={false}
+                      isOpen={this.state.isFetching}>
                         <ActivityIndicator
                           style={{justifyContent: 'center', alignItems: 'center'}}
                           size = "large"
@@ -331,12 +390,28 @@ class Basic extends Component {
                           <View style={{flex: 1/4, flexDirection: 'row', margin: 10}}>
                             <CheckBox
                               style = {{color: 'blue'}}
+                              checked={this.state.tichCuc}
+                              onChange={() => {
+                                  if (!this.state.tichCuc) {
+                                      this.setState({tichCuc: true})
+                                  } else {
+                                      this.setState({tichCuc: false})
+                                  }
+                              }}
                             />
                             <Text style={{paddingLeft: 10, textAlignVertical: 'center', fontSize: 14}}>Tích cực</Text>
                           </View>
                           <View style={{flex: 1/4, flexDirection: 'row', margin: 10}}>
                             <CheckBox
                               style = {{color: 'blue'}}
+                              checked={this.state.tieuCuc}
+                              onChange={() => {
+                                  if (!this.state.tieuCuc) {
+                                      this.setState({tieuCuc: true})
+                                  } else {
+                                      this.setState({tieuCuc: false})
+                                  }
+                              }}
                             />
                             <Text style={{paddingLeft: 10, textAlignVertical: 'center', fontSize: 14}}>Tiêu cực</Text>
                           </View>
@@ -349,18 +424,42 @@ class Basic extends Component {
                           <View style={{flex: 1/3, flexDirection: 'row', margin: 10}}>
                             <CheckBox
                               style = {{color: 'blue'}}
+                              checked={this.state.baoChi}
+                              onChange={() => {
+                                  if (!this.state.baoChi) {
+                                      this.setState({baoChi: true})
+                                  } else {
+                                      this.setState({baoChi: false})
+                                  }
+                              }}
                             />
                             <Text style={{paddingLeft: 10, textAlignVertical: 'center', fontSize: 14}}>Báo chí</Text>
                           </View>
                           <View style={{flex: 1/3, flexDirection: 'row', margin: 10}}>
                             <CheckBox
                               style = {{color: 'blue'}}
+                              checked={this.state.dienDan}
+                              onChange={() => {
+                                  if (!this.state.dienDan) {
+                                      this.setState({dienDan: true})
+                                  } else {
+                                      this.setState({dienDan: false})
+                                  }
+                              }}
                             />
                             <Text style={{paddingLeft: 10, textAlignVertical: 'center', fontSize: 14}}>Diễn đàn</Text>
                           </View>
                           <View style={{flex: 1/3, flexDirection: 'row', margin: 10}}>
                             <CheckBox
                               style = {{color: 'blue'}}
+                              checked={this.state.binhLuan}
+                              onChange={() => {
+                                  if (!this.state.binhLuan) {
+                                      this.setState({binhLuan: true})
+                                  } else {
+                                      this.setState({binhLuan: false})
+                                  }
+                              }}
                             />
                             <Text style={{paddingLeft: 10, textAlignVertical: 'center', fontSize: 14}}>Bình luận</Text>
                           </View>
@@ -370,19 +469,42 @@ class Basic extends Component {
                           <View style={{flex: 1/3, flexDirection: 'row', margin: 10}}>
                             <CheckBox
                               style = {{color: 'blue', backgroundColor: '#FFF',}}
-                              onChange={() => this.setState({fanpage: false})}
+                              checked={this.state.fanpage}
+                              onChange={() => {
+                                  if (!this.state.fanpage) {
+                                      this.setState({fanpage: true})
+                                  } else {
+                                      this.setState({fanpage: false})
+                                  }
+                              }}
                             />
                             <Text style={{paddingLeft: 10, textAlignVertical: 'center', fontSize: 14}}>Fanpage</Text>
                           </View>
                           <View style={{flex: 1/3, flexDirection: 'row', margin: 10}}>
                             <CheckBox
                               style = {{color: 'blue'}}
+                              checked={this.state.group}
+                              onChange={() => {
+                                  if (!this.state.group) {
+                                      this.setState({group: true})
+                                  } else {
+                                      this.setState({group: false})
+                                  }
+                              }}
                             />
                             <Text style={{paddingLeft: 10, textAlignVertical: 'center', fontSize: 14}}>Group</Text>
                           </View>
                           <View style={{flex: 1/3, flexDirection: 'row', margin: 10}}>
                             <CheckBox
                               style = {{color: 'blue'}}
+                              checked={this.state.caNhan}
+                              onChange={() => {
+                                  if (!this.state.caNhan) {
+                                      this.setState({caNhan: true})
+                                  } else {
+                                      this.setState({caNhan: false})
+                                  }
+                              }}
                             />
                             <Text style={{paddingLeft: 10, textAlignVertical: 'center', fontSize: 14}}>Cá nhân</Text>
                           </View>
@@ -390,15 +512,20 @@ class Basic extends Component {
 
                         <View style={{flexDirection: 'row', padding: 15}}>
                           <Button
-                          onPress = {this.testtt.bind(this)}
+                          onPress = {() => this.onFilterConfirm()}
                           style={{flex: 1/2, borderWidth: 1, borderColor: 'blue', borderRadius: 20, margin: 10}}> Lọc </Button>
-                          <Button style={{flex: 1/2, borderWidth: 1, borderColor: 'blue', borderRadius: 20, margin: 10}}> Hủy </Button>
+                          <Button
+                          onPress = {() => this.setState({isFilter: false})}
+                          style={{flex: 1/2, borderWidth: 1, borderColor: 'blue', borderRadius: 20, margin: 10}}> Hủy </Button>
                         </View>
                       </View>
                     </Modal>
                     </View>
                     <ScrollView tabLabel="ios-papers" style={{height: 700, backgroundColor: 'white'}}>
-                        <ChartItem/>
+                        <ChartItem
+                            keyword={this.state.keyWord}
+                            password={this.props.global.user.password}
+                            user_name={this.props.global.user.user_name}/>
                     </ScrollView>
                 </ScrollableTabView>
             </View>

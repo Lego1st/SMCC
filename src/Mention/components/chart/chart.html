@@ -15,51 +15,32 @@
 		}
 	</style>
 </head>
-<body onload="myFunction()">
+<body>
 	<div id="chart_main" class="well"></div>
 	<div id="source_main" class="well"></div>
 	<div id="sentiment_main" class="well"></div>
-	<button id="create" class="btn btn-round btn-danger" onclick="test()" style="display:none;">
-      	<span>Hoàn thành</span>
-    </button>
-
 	<div id="ScriptHolder"></div>
-
 	<script src="jquery.js"></script>
 	<script src="highcharts.js"></script>
 
-
 	<script>
-		function myFunction(){
-			document.getElementById('create').click();
-		}
-
-		function test() {
-			var callChartApi = 'http://orm.vn:2930' + "/ChartApi.aspx?key=[{'main_keyword':'smcc','require_keywords':'','exclude_keywords':''}]&username=admin@orm.vn&pass=1b4727a96eb05921e68228341642b529";
-			var getChartDataExport = document.createElement('script');
-			getChartDataExport.setAttribute('id', 'jsonScript');
-			getChartDataExport.setAttribute('type', 'text/javascript');
-			getChartDataExport.setAttribute('src', callChartApi);
-
-			document.getElementById('ScriptHolder').appendChild(getChartDataExport);
-			if (WebViewBridge) {
-          WebViewBridge.onMessage = function (message) {
-            objectInfo = JSON.parse(message);
-            alert(message);
-            //Upload stuffs here
-            var callChartApi = 'http://orm.vn:2930' + "/ChartApi.aspx?key="+ objectInfo["key"] +"&username="+ objectInfo["username"] +"&pass="+ objectInfo["pass"] +"";
-		        var getChartDataExport = document.createElement('script');
-		        getChartDataExport.setAttribute('id', 'jsonScript');
-		        getChartDataExport.setAttribute('type', 'text/javascript');
-		        getChartDataExport.setAttribute('src', callChartApi);
-
-	        	document.getElementById('ScriptHolder').appendChild(getChartDataExport);
-            //uploadCanvasAsImage(objectInfo);
-            WebViewBridge.send("got the message inside webview");
-          };
-          WebViewBridge.send("hello from webview");
+        function test() {
+            if (WebViewBridge) {
+                WebViewBridge.onMessage = function (message) {
+                    objectInfo = JSON.parse(message);
+                    alert(message);
+                    var callChartApi = 'http://orm.vn:2930' + "/ChartApi.aspx?key=[{'main_keyword':'smcc','require_keywords':'','exclude_keywords':''}]&username=admin@orm.vn&pass=1b4727a96eb05921e68228341642b529";
+                    var getChartDataExport = document.createElement('script');
+                    getChartDataExport.setAttribute('id', 'jsonScript');
+                    getChartDataExport.setAttribute('type', 'text/javascript');
+                    getChartDataExport.setAttribute('src', callChartApi);
+                    document.getElementById('ScriptHolder').appendChild(getChartDataExport);
+                    //uploadCanvasAsImage(objectInfo);
+                    WebViewBridge.send("got the message inside webview");
+                };
+                WebViewBridge.send("hello from webview");
+            }
         }
-		}
 
 		function chart_callback(data) {
 			console.log(data);

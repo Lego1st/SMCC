@@ -182,7 +182,9 @@ module.exports = class Menu extends Component {
         />
         <View style={{paddingBottom: 20}}>
           <View style={styles.avatarContainer}>
-            <Text style={[styles.name, {flex: 2/3}]}>Cài đặt</Text>
+            <Text
+                onPress={this.props.onSettingSelected}
+                style={[styles.name, {flex: 2/3}]}>Cài đặt</Text>
             <View style={[styles.name, {flex: 1/3}]} />
           </View>
           <View style={styles.avatarContainer}>
