@@ -362,7 +362,7 @@ class Basic extends Component {
                 >
 
                 <View style={{flex: 1}}
-                tabLabel="ios-paper">
+                tabLabel="comments">
                     {view}
                     <Modal
                       style = {{flexDirection: 'column', justifyContent: 'center', alignItems: 'center', height: 100, width: 200, borderRadius: 10}}

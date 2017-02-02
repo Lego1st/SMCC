@@ -47,9 +47,8 @@ const injectScript = `
                     if (WebViewBridge) {
 
                       WebViewBridge.onMessage = function (message) {
-                        var array = message.split("#");
-                        var callChartApi = 'http://orm.vn:2930' + "/ChartApi.aspx?key=" + array[0] + "&username=" + array[1] + "&pass=" + array[2];
-                        alert(callChartApi);
+                        var array = message.split("|");
+                        var callChartApi = "http://orm.vn:2930/ChartApi.aspx?key=" + encodeURIComponent(array[1]) + "&username=" + array[2] + "&pass=" + array[3];
                         var getChartDataExport = document.createElement('script');
                         getChartDataExport.setAttribute('id', 'jsonScript');
                         getChartDataExport.setAttribute('type', 'text/javascript');
@@ -75,6 +74,31 @@ module.exports = class ChartItem extends Component {
         };
     }
 
+    shouldComponentUpdate(nextProps, nextState) {
+      if (this.state.object.keyword != nextProps.keyword) {
+        return true
+      } else {
+        return false
+      }
+    }
+
+    componentWillUpdate(nextProps, nextState) {
+      //console.log(nextProps);
+      this.setState({
+          object: {
+              keyword: nextProps.keyword,
+              user_name: nextProps.user_name,
+              password: nextProps.password
+          }
+      }, () => {
+        //console.log(this.state.object);
+        const { webviewbridge } = this.refs;
+        let temp = 'a|' + this.state.object.keyword + '|' + this.state.object.user_name + '|' + this.state.object.password + '|b'
+        console.log(temp)
+        webviewbridge.sendToBridge(JSON.stringify(temp));
+      })
+    }
+
     componentWillMount() {
         this.setState({
             object: {
@@ -84,6 +108,7 @@ module.exports = class ChartItem extends Component {
             }
         }, () => {
             console.log(this.state.object)
+
         })
 
     }
@@ -91,7 +116,7 @@ module.exports = class ChartItem extends Component {
 
     onBridgeMessage(message) {
         const { webviewbridge } = this.refs;
-        let temp = this.state.object.keyword + '#' + this.state.object.user_name + '#' + this.state.object.password
+        let temp = 'a|' + this.state.object.keyword + '|' + this.state.object.user_name + '|' + this.state.object.password + '|b'
         console.log(temp)
 
         switch (message) {
@@ -104,6 +129,7 @@ module.exports = class ChartItem extends Component {
         }
     }
     render() {
+      console.log("render again");
         return (
             <View style={{height: 1300}}>
                 <WebViewBridge
